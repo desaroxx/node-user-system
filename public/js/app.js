@@ -1,0 +1,14 @@
+angular.module('sampleApp', 
+	[
+		'ngRoute',
+		'ngResource', 
+		'LocalStorageModule',
+		'appRoutes', 
+		'MainCtrl',
+		'LoginCtrl',
+		'NerdCtrl', 
+		'NerdService', 
+		'GeekCtrl', 
+		'GeekService'
+	]
+);
