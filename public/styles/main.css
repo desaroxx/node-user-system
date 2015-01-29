@@ -1,0 +1,13 @@
+
+.layout-content, .doc-content {
+  max-width: 864px;
+  margin: auto;
+}
+
+.login-window {
+	min-width: 500px;
+}
+
+.md-button {
+	margin: 0.5em !important;
+}
