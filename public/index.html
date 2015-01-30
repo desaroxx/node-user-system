@@ -19,7 +19,7 @@
     <base href="/">
     <!-- endbuild -->
   </head>
-  <body ng-app="skeletonApp" ng-controller="ApplicationController">
+  <body ng-app="skeletonApp" ng-controller="ApplicationCtrl">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -29,8 +29,14 @@
       <div class="md-toolbar-tools" layout="row">
         <span class="md-flex"><a href="/">Article Mart</a></span>
         <span flex></span>
-        <md-button class="md-accent md-raised md-hue-2" ng-href="/register">Register</md-button>
-        <md-button class="md-raised md-accent md-hue-1" ng-href="/login">Login</md-button>
+        <div ng-show="showLogin">
+            <md-button class="md-accent md-raised md-hue-2" ng-href="/register">Register</md-button>
+            <md-button class="md-raised md-accent md-hue-1" ng-href="/login">Login</md-button>
+        </div>
+        <div ng-show="showUser">
+            {{email}}
+            <md-button class="md-raised md-accent md-hue-1" ng-click="logout()">Logout</md-button>
+        </div>
       </div>
     </md-toolbar>
 
@@ -64,6 +70,7 @@
     <script src="libs/angular-route/angular-route.js"></script>
     <script src="libs/hammerjs/hammer.js"></script>
     <script src="libs/angular-material/angular-material.js"></script>
+    <script src="libs/angular-local-storage/dist/angular-local-storage.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -74,6 +81,8 @@
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
         <script src="scripts/controllers/login.js"></script>
+        <script src="scripts/controllers/register.js"></script>
+        <script src="scripts/controllers/entries.js"></script>
         <!-- endbuild -->
 </body>
 </html>

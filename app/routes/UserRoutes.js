@@ -103,7 +103,8 @@ module.exports = function(app, passport) {
 				var token = jwt.sign({email:user.email, _id: user._id}, secret.key);
 				return res.json({ 
 					token: token,
-					user_id: user._id
+					user_id: user._id,
+					email: user.email
 				});
 			});
 		});

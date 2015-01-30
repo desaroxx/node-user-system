@@ -11,3 +11,11 @@
 .md-button {
 	margin: 0.5em !important;
 }
+
+md-progress-linear .md-container {
+	margin-top: -5px;
+}
+
+.login-error-box span{
+	color: red;
+}

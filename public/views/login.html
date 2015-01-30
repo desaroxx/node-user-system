@@ -1,3 +1,4 @@
+<md-progress-linear class="loader" ng-show="showLoading" md-mode="indeterminate"></md-progress-linear>
 <div layout="column" layout-fill layout-align="center center">
 	<div class="layout-content" layout="column" layout-fill layout-align="center center">
 		<md-card class="login-window">
@@ -7,6 +8,10 @@
 			  	</h2>
 			</md-toolbar>
 			<md-card-content>
+				<div class="login-error-box" layout="row" layout-align="center center">
+					<span ng-show="showLoginError">Incorrect username or password.</span>
+				</div>
+								    
 				<form name="userForm">
 					<md-input-container flex>
 						<label>Email:</label>
@@ -16,13 +21,13 @@
 						<label>Password:</label>
 						<input type="password" ng-model="user.password">
 					</md-input-container>
+					<div class="md-actions" layout="row">
+						<span flex></span>
+						<md-button ng-click="login(user)" class="md-raised md-primary">
+					  		Login
+						</md-button>
+					</div>
 				</form>
-				<div class="md-actions" layout="row">
-					<span flex></span>
-					<md-button ng-click="login(user)" class="md-primary">
-				  		Login
-					</md-button>
-				</div>
 			</md-card-content>
 		</md-card>
 	</div>	
