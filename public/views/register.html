@@ -1,1 +1,40 @@
-<h1>Register</h1>
+<md-progress-linear class="loader" ng-show="showLoading" md-mode="indeterminate"></md-progress-linear>
+<div layout="column" layout-fill layout-align="center center">
+	<div class="layout-content" layout="column" layout-fill layout-align="center center">
+		<md-card class="login-window">
+			<md-toolbar class="md-background">
+				<h2 class="md-toolbar-tools">
+			    	<span>Register</span>
+			  	</h2>
+			</md-toolbar>
+			<md-card-content>
+				<div class="login-error-box" layout="row" layout-align="center center">
+					<span ng-show="showLoginError">Incorrect username or password.</span>
+				</div>
+								    
+				<form name="userForm">
+					<md-input-container flex>
+						<label>Email:</label>
+						<input type="email" ng-model="user.email" ng-change="isEmailFree(user.email)" required>
+						<div ng-messages="userForm.lastName.$error" ng-show="userForm.bio.$dirty">
+							<div ng-message="required">Valid email is required!</div>
+
+					    </div>
+					</md-input-container>
+					<md-input-container flex>
+						<label>Password:</label>
+						<input type="password" ng-model="user.password" required>
+					</md-input-container>
+					<div class="md-actions" layout="row">
+						<span flex></span>
+						<md-button ng-click="register(user)" class="md-raised md-primary">
+					  		Register
+						</md-button>
+					</div>
+				</form>
+			</md-card-content>
+		</md-card>
+	</div>	
+</div>
+
+

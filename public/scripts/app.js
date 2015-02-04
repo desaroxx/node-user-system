@@ -23,10 +23,6 @@ angular
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
       .when('/login', {
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
@@ -51,6 +47,21 @@ angular
   })
   .controller('ApplicationCtrl', function ($scope, $rootScope, $mdDialog, localStorageService) {
     console.log('[ApplicationCtrl] loading...');
+
+    $scope.tabs = [
+      {
+        title: "Home"
+      },{
+        title: "Trending"
+      }, {
+        title: "Best Rated"
+      }, {
+        title: "Sports"
+      }, {
+        title: "Tech"
+      }, {
+        title: "Business"
+      }];
 
     $scope.showUser = false;
     $scope.showLogin = true;

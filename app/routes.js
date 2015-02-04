@@ -1,7 +1,6 @@
 var UserRoutes = require('./routes/UserRoutes');
 var EntryRoutes = require('./routes/EntryRoutes');
 
-
 module.exports = function(app, passport) {
 
 	UserRoutes(app, passport);

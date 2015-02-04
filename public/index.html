@@ -39,6 +39,16 @@
         </div>
       </div>
     </md-toolbar>
+    <md-tabs md-selected="selectedIndex">
+        <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.title}}">
+            <div class="demo-tab tab{{$index%4}}" layout="column" layout-fill layout-align="space-around center">
+                <div ng-bind="tab.content"></div>
+                <md-button class="md-warn" ng-click="removeTab( tab )">
+                  Remove Tab
+                </md-button>
+            </div>
+        </md-tab>
+    </md-tabs>
 
     <div ng-view></div>
 
@@ -79,7 +89,6 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>
         <script src="scripts/controllers/login.js"></script>
         <script src="scripts/controllers/register.js"></script>
         <script src="scripts/controllers/entries.js"></script>

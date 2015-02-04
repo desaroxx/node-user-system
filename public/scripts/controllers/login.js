@@ -11,10 +11,15 @@ angular.module('skeletonApp')
 	.controller('LoginCtrl', function ($scope, $rootScope, $location, localStorageService, $resource, $mdToast, $animate) {
 	    console.log('[LoginCtrl] loading...');
 
-		var Login = $resource('/login');
+		var Login = $resource('/api/login');
 
 		$scope.showLoginError = false;
 		$scope.showLoading = false;
+
+    	$scope.user = {
+    		email: '',
+    		password: ''
+    	};
 
 	    $scope.login = function(user) {			
 	    	console.log('[LoginCtrl] login():');
@@ -22,11 +27,12 @@ angular.module('skeletonApp')
 	    	// update view
 	    	$scope.showLoading = true;
 
-
 	    	// process login
 			var login = new Login();
+			    // the variable is defined
 			login.email = user.email;
 			login.password = user.password;
+			
 			login.$save(function(response, responseHeader) {
 				console.log('[LoginCtrl] token: ' + response.token);
 				console.log('[LoginCtrl] user_id: ' + response.user_id);
