@@ -2,27 +2,16 @@
 
 /**
  * @ngdoc function
- * @name skeletonApp.controller:MainCtrl
+ * @name angularBootstrapApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the skeletonApp
+ * Controller of the angularBootstrapApp
  */
-angular.module('skeletonApp')
-  .controller('MainCtrl', function ($scope, $resource) {
-  	console.log('[MainCtrl] loading...');
-
-  	var Entries = $resource('/api/entries');
-
-  	function getEntries() {
-  		console.log('[MainCtrl] getEntries()');
-  		Entries.get({}, function(response) {
-  			response.entries.forEach(function(entry) {
-  				console.log('User: ' + entry.user_id);
-  				console.log(entry.content);
-  			});
-  		});
-  	}
-
-  	getEntries();
-    
+angular.module('angularBootstrapApp')
+  .controller('MainCtrl', function ($scope) {
+    $scope.awesomeThings = [
+      'HTML5 Boilerplate',
+      'AngularJS',
+      'Karma'
+    ];
   });

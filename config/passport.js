@@ -9,6 +9,7 @@ module.exports = function(passport) {
         secret.key,
         function(tokenData, done) {
             User.findById(tokenData._id, function (err, user) {
+                console.log(tokenData);
                 if (err) { return done(err); }
                 if (!user) { return done(null, false); }
                 return done(null, user, tokenData);

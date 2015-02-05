@@ -8,49 +8,57 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
+    <link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css">
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
-    <link rel="stylesheet" href="libs/angular-material/angular-material.css">
-    <link rel="stylesheet" href="libs/angular-material/default-theme.css">  
-    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic">
-  
-    <base href="/">
+    <link rel="stylesheet" href="styles/custom.css">
     <!-- endbuild -->
+    <base href="/">
   </head>
-  <body ng-app="skeletonApp" ng-controller="ApplicationCtrl">
+  <body ng-app="angularBootstrapApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <md-toolbar>
-      <div class="md-toolbar-tools" layout="row">
-        <span class="md-flex"><a href="/">Article Mart</a></span>
-        <span flex></span>
-        <div ng-show="showLogin">
-            <md-button class="md-accent md-raised md-hue-2" ng-href="/register">Register</md-button>
-            <md-button class="md-raised md-accent md-hue-1" ng-href="/login">Login</md-button>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">skeleton</a>
         </div>
-        <div ng-show="showUser">
-            {{email}}
-            <md-button class="md-raised md-accent md-hue-1" ng-click="logout()">Logout</md-button>
-        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="/login">Login</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <a href="/register">
+              <button type="button" class="btn btn-success navbar-btn">Register</button>
+            </a>
+            <a href="/login">
+              <button type="button" class="btn btn-primary navbar-btn">Login</button>
+            </a>
+          </ul>
+        </div><!--/.nav-collapse -->
       </div>
-    </md-toolbar>
-    <md-tabs md-selected="selectedIndex">
-        <md-tab ng-repeat="tab in tabs" ng-disabled="tab.disabled" label="{{tab.title}}">
-            <div class="demo-tab tab{{$index%4}}" layout="column" layout-fill layout-align="space-around center">
-                <div ng-bind="tab.content"></div>
-                <md-button class="md-warn" ng-click="removeTab( tab )">
-                  Remove Tab
-                </md-button>
-            </div>
-        </md-tab>
-    </md-tabs>
+    </nav>
 
-    <div ng-view></div>
+    <div class="container">
+      <div ng-view=""></div>
+
+      <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+      </div>
+    </div>
 
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -67,31 +75,30 @@
     <!-- build:js(.) scripts/oldieshim.js -->
     <!--[if lt IE 9]>
     <script src="libs/es5-shim/es5-shim.js"></script>
-    <script src="libs/json3/libs/json3.js"></script>
+    <script src="libs/json3/lib/json3.js"></script>
     <![endif]-->
     <!-- endbuild -->
 
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
+    <script src="libs/jquery/dist/jquery.js"></script>
     <script src="libs/angular/angular.js"></script>
+    <script src="libs/bootstrap/dist/js/bootstrap.js"></script>
     <script src="libs/angular-animate/angular-animate.js"></script>
-    <script src="libs/angular-aria/angular-aria.js"></script>
+    <script src="libs/angular-cookies/angular-cookies.js"></script>
     <script src="libs/angular-resource/angular-resource.js"></script>
     <script src="libs/angular-route/angular-route.js"></script>
-    <script src="libs/hammerjs/hammer.js"></script>
-    <script src="libs/angular-material/angular-material.js"></script>
-    <script src="libs/angular-local-storage/dist/angular-local-storage.js"></script>
+    <script src="libs/angular-sanitize/angular-sanitize.js"></script>
+    <script src="libs/angular-touch/angular-touch.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
-    <script src="//rawgit.com/angular/bower-material/master/angular-material.js"></script>
-    
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/controllers/about.js"></script>
         <script src="scripts/controllers/login.js"></script>
         <script src="scripts/controllers/register.js"></script>
-        <script src="scripts/controllers/entries.js"></script>
         <!-- endbuild -->
 </body>
 </html>
