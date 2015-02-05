@@ -9,11 +9,9 @@ module.exports = function(app, passport) {
 
 	app.route('/api/auth')
 		/*
-		 * Task: Authenticate to get authentication token
-		 *
+		 * Task: Authenticate to get auth token
 		 * Specification:
 		 * o Token expiry: never
-		 *
 		 */
 		.post(function(req, res) {
 			console.log('POST /login called');
@@ -71,7 +69,7 @@ module.exports = function(app, passport) {
 		.get(function(req, res) {
 			console.log('GET /register called');
 
-			//input validation
+			// input validation
 
 			// check: at least 1 parameter set
 			var parameterCounter = 0;
