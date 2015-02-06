@@ -1,3 +1,5 @@
+'use strict';
+
 var Entry = require('./../model/Entry');
 
 module.exports = function(app, passport) {

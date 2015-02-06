@@ -1,9 +1,11 @@
+'use strict';
+
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
 
 var User = require('./../model/User');
 var secret = require('./../../config/secret');
-var Validator = require('./../utilities/Validator');
+var FormatValidator = require('./../utilities/FormatValidator');
 var Authentication = require('./../utilities/Authentication');
 
 module.exports = function(app, passport) {
@@ -19,7 +21,7 @@ module.exports = function(app, passport) {
 			// set user if user is logged in
 			if (req.headers.authorization) {
 				var token = req.headers.authorization.split(' ')[1];
-				req.user = Authentication.getUser(token);
+				req.user = Authentication.getUser(token, secret.key);
 			}
 
 			// authorize
@@ -90,13 +92,13 @@ module.exports = function(app, passport) {
 
 			// check: valid parameter format
 			parameters.forEach(function(parameter) {
-				if (parameter === 'email' && !Validator.isValidEmailFormat(email)) {
+				if (parameter === 'email' && !FormatValidator.isValidEmailFormat(email)) {
 					return res.status(400).json({ message: 'invalid email format'});
 				}
-				if (parameter === 'username' && !Validator.isValidUsernameFormat(username)) {
+				if (parameter === 'username' && !FormatValidator.isValidUsernameFormat(username)) {
 					return res.status(400).json({ message: 'invalid username format'});
 				}
-				if (parameter === 'password' && !Validator.isValidPasswordFormat(password)) {
+				if (parameter === 'password' && !FormatValidator.isValidPasswordFormat(password)) {
 					return res.status(400).json({ message: 'invalid password format'});
 				}
 			});
