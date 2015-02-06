@@ -1,16 +1,15 @@
 // modules =================================================
-var express 		= require('express');
-var app 			= express();
-var mongoose 		= require('mongoose');
-var passport		= require('passport');
-var bodyParser 		= require('body-parser');
-var https 			= require('https');
-var http 			= require('http');
-var fs 				= require('fs');
-var methodOverride 	= require('method-override');
-var morgan			= require('morgan');
-var bodyParser   	= require('body-parser');
-
+var express 			= require('express');
+var app 				= express();
+var mongoose 			= require('mongoose');
+var passport			= require('passport');
+var bodyParser 			= require('body-parser');
+var expressValidator	= require('express-validator');
+var customValidators	= require('app/utilities/CustomValidators');
+var https 				= require('https');
+var fs 					= require('fs');
+var methodOverride 		= require('method-override');
+var morgan				= require('morgan');
 
 // configuration ===========================================
 
@@ -29,6 +28,7 @@ app.use(morgan('dev')); // log every request to the console
 
 app.use(bodyParser.json()); // parse application/vnd.api+json as json
 app.use(bodyParser.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded
+app.use(expressValidator(customValidators));
 
 app.use(passport.initialize());
 
@@ -40,8 +40,8 @@ require('./app/routes')(app, passport); // pass our application into our routes
 
 
 // start secured app =======================================
-var hskey 		= fs.readFileSync('config/key/hacksparrow-key.pem');
-var hscert 		= fs.readFileSync('config/key/hacksparrow-cert.pem')
+var hskey 		= fs.readFileSync('./config/key/hacksparrow-key.pem');
+var hscert 		= fs.readFileSync('./config/key/hacksparrow-cert.pem')
 
 var options = {
     key: hskey,
@@ -49,5 +49,6 @@ var options = {
 };
 
 var httpsServer = https.createServer(options, app);
-httpsServer.listen(port);
-console.log('[server.js] listening on port: ' + port);
+httpsServer.listen(port, function() {
+	console.log('[server.js] listening on port: ' + port);
+});
