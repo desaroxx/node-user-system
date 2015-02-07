@@ -31,6 +31,5 @@ module.exports = {
 			var regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,30}$/;
 		    return regex.test(password);
 		}
-
 	}   
 };
