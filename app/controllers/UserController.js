@@ -59,7 +59,7 @@ module.exports.updateUserDetails = function(req, res) {
 	var update = {
 		'email':  req.body.email,
 		'username': req.body.username,
-		'password': passwordHash.generate(req.body.password)
+		'password': password
 	};
 
 	// remove invalid parameters
@@ -72,6 +72,9 @@ module.exports.updateUserDetails = function(req, res) {
 	if(Object.keys(updates).length < 1) {
 		return res.status(400).json({ message: 'invalid parameters'});
 	}
+
+	// if password is in update, then hash it
+	if ('password' in update) update.password = passwordHash.generate(req.body.password);
 
 	// update user to db
 	User.findByIdAndUpdate(req.params.user_id, update, {}, function(err, user) {
