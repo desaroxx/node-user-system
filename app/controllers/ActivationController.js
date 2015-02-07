@@ -45,8 +45,8 @@ module.exports.resendEmail = function(req, res) {
 
 		// send email
 		Mailer.sendMail(email, mailConfig.smtpSettings);
-
-		return res.json({ message: "activation resent to: " + user.email});
+		var message = 'activation resent to: ' + user.email;
+		return res.json({ message: message});
 	});
 };
 
@@ -78,6 +78,7 @@ module.exports.activate = function(req, res) {
 			return res.status(500).json({ message: 'internal db error (2)'});
 		}
 		if (!updatedUser) return res.status(400).json({ message: 'valid token, but user does not exist'});
-		return res.json({ message: 'activated: ' + updatedUser });
+		var message = 'activated: ' + updatedUser.email;
+		return res.json({ message: message});
 	});
 };
