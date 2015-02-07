@@ -59,17 +59,17 @@ module.exports.updateUserDetails = function(req, res) {
 	var update = {
 		'email':  req.body.email,
 		'username': req.body.username,
-		'password': password
+		'password': 'dummy'
 	};
 
 	// remove invalid parameters
 	var errors = req.validationErrors();
 	errors.forEach(function(error) {
-		if (error.param in updates) delete updates[error.param];
+		if (error.param in update) delete update[error.param];
 	});
 
 	// check if still has some parameters
-	if(Object.keys(updates).length < 1) {
+	if(Object.keys(update).length < 1) {
 		return res.status(400).json({ message: 'invalid parameters'});
 	}
 
