@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = {
-	url : 'mongodb://127.0.0.1:27017/skeleton'
+	url : 'mongodb://127.0.0.1:27017/skeleton',
+	testUrl : 'mongodb://127.0.0.1:27017/skeleton-test'
 }

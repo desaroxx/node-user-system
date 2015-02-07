@@ -5,7 +5,7 @@ var passwordHash = require('password-hash');
 
 var User = require('./../model/User');
 var secret = require('./../../config/secret');
-var Authentication = require('./../utilities/Authentication');
+var Authenticator = require('./../utilities/Authenticator');
 
 /*
  * Task: Return user information
@@ -14,7 +14,7 @@ module.exports.getUserDetails = function(req, res) {
 	// set user if user is logged in
 	if (req.headers.authorization) {
 		var token = req.headers.authorization.split(' ')[1];
-		req.user = Authentication.getUser(token, secret.key);
+		req.user = Authenticator.getUser(token, secret.key);
 	}
 
 	// authorize

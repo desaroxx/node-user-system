@@ -25,7 +25,7 @@ module.exports.resendEmail = function(req, res) {
 	var email = req.body.email;
 
 	// check if user already exists
-	var query = {email: email};
+	var query = {email: email.toLowerCase()};
 	User.findOne(query, function(err, user) {
 		if (err) return res.status(500).json({ message: 'internal db error (0)'});
 		if (!user) return res.status(400).json({ message: 'invalid email (1)'});
@@ -38,7 +38,7 @@ module.exports.resendEmail = function(req, res) {
 		var email = {
 			from: 'skeleton <notifications@desaroxx.com>', // sender address
 		    to: user.email, // list of receivers
-		    subject: 'Account activation', // Subject line
+		    subject: 'Account activation: resend', // Subject line
 		    text: token, // plaintext body
 		    html: token // html body
 		}
@@ -64,19 +64,20 @@ module.exports.activate = function(req, res) {
 	}
 
 	// get user from token
-	var user = Activator.verfiyAndGetUser(token, secret.activationKey);
+	var user = Activator.verfiyAndGetUser(req.body.token, secret.activationKey);
 	if (!user) {
 		return res.status(400).json({ message: 'invalid activation token'});
 	}
 
 	// activate user in db
-	var query = {email: user.email};
+	var query = {email: user.email.toLowerCase()};
 	var update = {activated: true};
 	var options = {};
 	User.findOneAndUpdate(query, update, options, function(err, updatedUser) {
 		if (err) {
 			return res.status(500).json({ message: 'internal db error (2)'});
 		}
-		return res.json({ message: 'activated: ' + updatedUser.username });
+		if (!updatedUser) return res.status(400).json({ message: 'valid token, but user does not exist'});
+		return res.json({ message: 'activated: ' + updatedUser });
 	});
 };

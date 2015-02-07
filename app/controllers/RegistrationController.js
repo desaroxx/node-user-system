@@ -15,8 +15,8 @@ var mailConfig = require('./../../config/mail');
  */
 module.exports.isFree = function(req, res) {
 	// input validation
-	req.checkParams('email', 'invalid email').notEmpty().isEmail();
-	req.checkParams('username', 'invalid username').notEmpty().isUsername();
+	req.checkQuery('email', 'invalid email').notEmpty().isEmail();
+	req.checkQuery('username', 'invalid username').notEmpty().isUsername();
 
 	// prepare db query
 	var queryParameters = {
@@ -25,6 +25,7 @@ module.exports.isFree = function(req, res) {
 	};
 
 	// remove bad parameters from query
+	var errors = req.validationErrors();
 	errors.forEach(function(error) {
 		if (error.param in queryParameters) delete queryParameters[error.param];
 	});

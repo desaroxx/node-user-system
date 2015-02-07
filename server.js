@@ -7,6 +7,7 @@ var bodyParser 			= require('body-parser');
 var expressValidator	= require('express-validator');
 var customValidators	= require('app/utilities/CustomValidators');
 var https 				= require('https');
+var http 				= require('http');
 var fs 					= require('fs');
 var methodOverride 		= require('method-override');
 var morgan				= require('morgan');
@@ -40,15 +41,20 @@ require('./app/routes')(app, passport); // pass our application into our routes
 
 
 // start secured app =======================================
-var hskey 		= fs.readFileSync('./config/key/hacksparrow-key.pem');
-var hscert 		= fs.readFileSync('./config/key/hacksparrow-cert.pem')
+// var hskey 		= fs.readFileSync('./config/key/hacksparrow-key.pem');
+// var hscert 		= fs.readFileSync('./config/key/hacksparrow-cert.pem')
 
-var options = {
-    key: hskey,
-    cert: hscert
-};
+// var options = {
+//     key: hskey,
+//     cert: hscert
+// };
 
-var httpsServer = https.createServer(options, app);
-httpsServer.listen(port, function() {
+// var httpsServer = https.createServer(options, app);
+// httpsServer.listen(port, function() {
+// 	console.log('[server.js] listening on port: ' + port);
+// });
+
+var httpServer = http.createServer(app);
+httpServer.listen(port, function() {
 	console.log('[server.js] listening on port: ' + port);
 });

@@ -14,7 +14,6 @@ module.exports.getUser = function(token, secret) {
 	try {
 		user = jwt.verify(token, secret);
 	} catch (err) {
-
 	}
 	return user;
 };
