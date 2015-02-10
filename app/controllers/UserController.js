@@ -2,6 +2,7 @@
 
 var jwt = require('jsonwebtoken');
 var passwordHash = require('password-hash');
+var Q = require('q');
 
 var User = require('./../model/User');
 var secret = require('./../../config/secret');
@@ -30,8 +31,8 @@ module.exports.getUserDetails = function(req, res) {
 	var query = {username: req.params.username.toLowerCase()};
 
 	// find user in database
-	User.findOne(query, function(err, user) {
-		if (err) res.status(500).json({ message: 'internal server error (0)'});
+	User.qFindOne(query)
+	.then(function(user) {
 		if (!user) return res.status(400).json({ message: 'username does not exist'});
 		
 		var returnJSON = {};
@@ -40,6 +41,9 @@ module.exports.getUserDetails = function(req, res) {
 
 		if (isAuthorized) returnJSON.email = user.email;
 		res.json(returnJSON);
+	})
+	.catch(function(err) {
+		if (err) res.status(500).json({ message: 'internal server error (0)'});
 	});
 };
 
@@ -62,7 +66,7 @@ module.exports.updateUserDetails = function(req, res) {
 	req.checkBody('username', 'invalid username').notEmpty().isUsername();
 	req.checkBody('password', 'invalid password').notEmpty().isPassword();
 
-	// prepare db
+	// prepare update for db
 	var update = {
 		'email':  req.body.email,
 		'username': req.body.username,
@@ -86,30 +90,62 @@ module.exports.updateUserDetails = function(req, res) {
 	// update user to db
 	var query = {
 		username: req.params.username.toLowerCase()
+	};
+	
+	// function: check if username is free
+	var isUsernameFree = function() {
+		var deferred = Q.defer();
+		if ('username' in update) {
+			User.qFindOne({username:update.username.toLowerCase()})
+			.then(function(user) {
+				if (user) return res.status(400).json({ message: 'username taken'});
+				deferred.resolve();
+			});
+		} else {
+			deferred.resolve();
+		}
+		return deferred.promise;
 	}
 
-	console.log('query');
-	console.log(query);
-	User.findOneAndUpdate(query, update, {}, function(err, user) {
-		if (err) return res.status(500).json({ message: 'internal server error (0)'});
-		if (!user) return res.status(400).json({ message: 'invalid username'});
-
-		var returnJSON = {
-			'email': user.email,
-			'username': user.username,
-			'_id': user._id
-		};
-
-		// if username or email update, then return new token
-		if (('username' in update) || ('email' in update)) {
-			returnJSON.token = jwt.sign(
-				{
-					email 	 	: user.email, 
-					_id		 	: user._id, 
-					username 	: user.username
-				},
-				secret.key);
+	// function: check if email is free
+	var isEmailFree = function() {
+		var deferred = Q.defer();
+		if ('email' in update) {
+			User.qFindOne({username:update.email.toLowerCase()})
+			.then(function(user) {
+				if (user) return res.status(400).json({ message: 'email taken'});
+				deferred.resolve();
+			});
+		} else {
+			deferred.resolve();
 		}
-		return res.json(returnJSON);
+		return deferred.promise;
+	};
+
+	// barriere: wait till both checks are done: isEmailFree and isUsernameFree
+	Q.all([isUsernameFree(), isEmailFree()])
+	.then(function() {
+		User.findOneAndUpdate(query, update, {}, function(err, user) {
+			if (err) return res.status(500).json({ message: 'internal server error (0)'});
+			if (!user) return res.status(400).json({ message: 'username does not exist exists'});
+
+			var returnJSON = {
+				'email': user.email,
+				'username': user.username,
+				'_id': user._id
+			};
+
+			// if username or email update, then return new token
+			if (('username' in update) || ('email' in update)) {
+				returnJSON.token = jwt.sign(
+					{
+						email 	 	: user.email, 
+						_id		 	: user._id, 
+						username 	: user.username
+					},
+					secret.key);
+			}
+			return res.json(returnJSON);
+		});
 	});
 };

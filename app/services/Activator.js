@@ -34,7 +34,6 @@ module.exports.verfiyAndGetUser = function(token, secret) {
 	try {
 		user = jwt.verify(token, secret);
 	} catch(err) {
-		console.log('throwing');
 		return null;
 	}
 	return user;

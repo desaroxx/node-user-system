@@ -37,7 +37,6 @@ module.exports.sendMail = function(email, smtpSettings) {
                 console.log(err);
                 deferred.reject(new Error(err));
             } else {
-                console.log('[Mailer] sendMail(): message sent: ' + info.response);
                 deferred.resolve();
             }
         });
