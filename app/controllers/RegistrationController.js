@@ -20,8 +20,8 @@ module.exports.isFree = function(req, res) {
 
 	// prepare db query
 	var queryParameters = {
-		"email": req.query.email,
-		"username": req.query.username
+		'email': req.query.email,
+		'username': req.query.username
 	};
 
 	// remove bad parameters from query
@@ -32,18 +32,18 @@ module.exports.isFree = function(req, res) {
 
 	// check if still has some queryParameters
 	if(Object.keys(queryParameters).length < 1) {
-		return res.status(400).json({ message: 'invalid parameters'});
+		return res.status(400).json({ 'message': 'invalid parameters'});
 	}
 
 	// execute find
 	User.find(queryParameters, function(err, users) {
 		if (err) {
-			return res.status(500).json({ message: 'internal db error'});
+			return res.status(500).json({ 'message': 'internal db error'});
 		}
 		if (users.length > 0) {
-			return res.json({ isFree: false});
+			return res.send({ isFree:false});
 		} else {
-			return res.json({ isFree: true});
+			return res.send({ isFree:true});
 		}
 	});
 };
@@ -60,7 +60,7 @@ module.exports.isFree = function(req, res) {
 	// input error handling
 	var errors = req.validationErrors();
 	if (errors) {
-		return res.status(400).json({ message: 'There have been validation errors: ' + util.inspect(errors)});
+		return res.status(400).json({ message: 'There have been validation errors', errors:errors});
 	}
 
 	var email = req.body.email;

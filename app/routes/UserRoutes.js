@@ -4,7 +4,7 @@ var UserController = require('./../controllers/UserController');
 
 module.exports = function(app, passport) {
 
-	app.route('/api/users/:user_id')
+	app.route('/api/users/:username')
 		.get(function(req, res) {
 			UserController.getUserDetails(req, res);
 		})

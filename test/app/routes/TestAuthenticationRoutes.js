@@ -30,7 +30,8 @@ describe('Test AuthenticationRoutes', function () {
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
-                expect(JSON.parse(body).isFree).to.be.false;
+                body = JSON.parse(body);
+                expect(body.isFree).to.be.false;
                 done();
             });
 
@@ -42,7 +43,8 @@ describe('Test AuthenticationRoutes', function () {
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
-                expect(JSON.parse(body).isFree).to.be.false;
+                body = JSON.parse(body);
+                expect(body.isFree).to.be.false;
                 done();
             });
 
@@ -54,6 +56,7 @@ describe('Test AuthenticationRoutes', function () {
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
+                
                 expect(response.statusCode).to.equal(400);
                 done();
             });
@@ -87,7 +90,8 @@ describe('Test AuthenticationRoutes', function () {
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
-                expect(JSON.parse(body).isFree).to.be.true;
+                body = JSON.parse(body);
+                expect(body.isFree).to.be.true;
                 done();
             });
         });
@@ -98,7 +102,8 @@ describe('Test AuthenticationRoutes', function () {
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
-                expect(JSON.parse(body).isFree).to.be.true;
+                body = JSON.parse(body);
+                expect(body.isFree).to.be.true;
                 done();
             });
 
@@ -109,7 +114,7 @@ describe('Test AuthenticationRoutes', function () {
     describe('POST /api/register', function() {
         var url = baseAPIUrl + '/register';
 
-        it('should not register a already existing email', function(done) {
+        it('should not register an already existing email', function(done) {
             // clone good user
             var user = JSON.parse(JSON.stringify(testUser));
             user.email = 'john@snow.com';

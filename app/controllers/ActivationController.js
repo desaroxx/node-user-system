@@ -19,7 +19,7 @@ module.exports.resendEmail = function(req, res) {
 	// input error handling
 	var errors = req.validationErrors();
 	if (errors) {
-		return res.status(400).json({ message: 'There have been validation errors: ' + util.inspect(errors)});
+		return res.status(400).json({ message: 'There have been validation errors', errors:errors});
 	}
 
 	var email = req.body.email;
@@ -60,7 +60,7 @@ module.exports.activate = function(req, res) {
 	// input error handling
 	var errors = req.validationErrors();
 	if (errors) {
-		return res.status(400).json({ message: 'There have been validation errors: ' + util.inspect(errors)});
+		return res.status(400).json({ message: 'There have been validation errors', errors:errors});
 	}
 
 	// get user from token
