@@ -1,11 +1,11 @@
 'use strict';
-var expect = require('chai').expect;
-var mongoose = require('mongoose');
-var passwordHash = require('password-hash');
+var expect 			= require('chai').expect;
+var mongoose 		= require('mongoose');
+var passwordHash 	= require('password-hash');
 
-var rootPath = './../../..'
-var User = require(rootPath + '/app/model/User');
-var db = require(rootPath + '/config/db');
+var rootPath 		= './../../..'
+var User 			= require(rootPath + '/app/model/User');
+var db 				= require(rootPath + '/config/db');
 
 describe('TestUser', function() {
 

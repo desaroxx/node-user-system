@@ -1,11 +1,11 @@
 var UserRoutes = require('./routes/UserRoutes');
-var EntryRoutes = require('./routes/EntryRoutes');
+var ArticleRoutes = require('./routes/ArticleRoutes');
 var AuthenticationRoutes = require('./routes/AuthenticationRoutes');
 
 module.exports = function(app, passport) {
 
 	UserRoutes(app, passport);
-	EntryRoutes(app, passport);
+	ArticleRoutes(app, passport);
 	AuthenticationRoutes(app, passport);
 
 	// frontend routes =========================================================

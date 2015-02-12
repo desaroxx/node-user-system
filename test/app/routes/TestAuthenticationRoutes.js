@@ -1,12 +1,13 @@
 'use strict';
-var mongoose = require('mongoose');
-var expect = require('Chai').expect;
-var request = require('request');
-var randomString = require('randomstring');
+var mongoose        = require('mongoose');
+var expect          = require('Chai').expect;
+var request         = require('request');
+var randomString    = require('randomstring');
 
-var AuthCtrl = require('./../../../app/controllers/AuthenticationController');
-var Activator = require('./../../../app/services/Activator');
-var secret = require('./../../../config/secret');
+var rootPath        = './../../../';
+var AuthCtrl        = require(rootPath + 'app/controllers/AuthenticationController');
+var Activator       = require(rootPath + 'app/services/Activator');
+var secret          = require(rootPath + 'config/secret');
 
 describe('Test AuthenticationRoutes', function () {
 
