@@ -36,15 +36,13 @@ module.exports.isFree = function(req, res) {
 	}
 
 	// execute find
-	User.find(queryParameters, function(err, users) {
-		if (err) {
-			return res.status(500).json({ 'message': 'internal db error'});
-		}
-		if (users.length > 0) {
-			return res.send({ isFree:false});
-		} else {
-			return res.send({ isFree:true});
-		}
+	User.qFindOne(queryParameters)
+	.then(function(user) {
+		if (user) return res.send({ isFree:false});
+		return res.send({ isFree:true});
+	})
+	.catch(function(err) {
+		return res.status(500).json({ 'message': 'internal db error'});
 	});
 };
 
@@ -67,42 +65,53 @@ module.exports.isFree = function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 
+	// let off here
 	// check if username and email unique
-	User.findOne({ $or:[ {'email': email}, {'username': username}]}, 
-	 	function(err,user){
-	    	if(err) return res.status(500).json({ message: 'internal db error (1)'});
-	    	if (user != null) {
-	    		return res.status(400).json({ message: 'email or username already exists'});
-	    	}
-
-	    	// create new user
-	    	var newUser = new User();
-			newUser.email = email.toLowerCase();
-			newUser.username = username;
-			newUser.password = passwordHash.generate(password);
-
-			newUser.save(function(err) {
-				if(err) return res.status(500).json({ message: 'internal db error (2)'});
-
-				// send activation email
-
-				// generate activation token
-				var token = Activator.generateToken(newUser, secret.activationKey);
-
-				// prepare email
-				var email = {
-					from: 'skeleton <notifications@desaroxx.com>', // sender address
-				    to: newUser.email, // list of receivers
-				    subject: 'Account activation', // Subject line
-				    text: token, // plaintext body
-				    html: token // html body
-				}
-
-				// send email
-				Mailer.sendMail(email, mailConfig.smtpSettings);
-
-				return res.json({ message: 'User created!'});
-			});
+	var query = { $or:[ {email: email}, {username: username}]};
+	User.qFindOne(query)
+	.then(function(user) {
+		// check if user already exists
+		if (user != null) {
+			res.status(400).json({ message: 'email or username already exists'});
+			throw new Error('email or username already exists');
 		}
-	);
+	})
+	.then(function() {
+		// create new user
+		var user = new User({
+			email 				: email,
+			username 			: username,
+			lowercaseUsername	: username,
+			password 			: passwordHash.generate(password)
+		});
+
+		user.qSave()
+		.then(function() {
+			console.log('emailing');
+			// send activation email
+
+			// generate activation token
+			var token = Activator.generateToken(user, secret.activationKey);
+
+			// prepare email
+			var email = {
+				from: 'skeleton <notifications@desaroxx.com>', // sender address
+			    to: user.email, // list of receivers
+			    subject: 'Account activation', // Subject line
+			    text: token, // plaintext body
+			    html: token // html body
+			};
+
+			// send email
+			Mailer.sendMail(email, mailConfig.smtpSettings);
+
+			return res.json({ message: 'User created!'});
+		})
+		.catch(function(err) {
+			if(err) return res.status(500).json({ message: 'internal db error (2)'});
+		});
+	})
+	.catch(function(err) {
+		return res.status(500).json({ message: err});
+	});
  };

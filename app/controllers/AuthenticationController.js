@@ -24,20 +24,17 @@ module.exports.authenticate = function(req, res) {
 		return res.status(400).json({ message: 'There have been validation errors: ' + util.inspect(errors)});
 	}
 
-	var email = req.body.email.toLowerCase();
-	var password = req.body.password;
-
-	// check if user exists
-	User.findOne({email: email}, function(err, user) {
-		if (err) return res.status(500).json({ message: 'internal server error'});
+	User.qFindByEmail(req.body.email)
+	.then(function(user) {
 		if (!user) return res.status(401).json({ message: 'invalid credentials'});
-		if (!passwordHash.verify(password, user.password)) return res.status(401).json({ message: 'invalid credentials'});
+		if (!passwordHash.verify(req.body.password, user.password)) return res.status(401).json({ message: 'invalid credentials'});
 
 		// check is user is activated
 		if (!user.activated) {
 			return res.status(401).json({ message: 'account not activated'});
 		}
 
+		// create token
 		var token = jwt.sign(
 			{
 				email 	 	: user.email, 
@@ -51,5 +48,8 @@ module.exports.authenticate = function(req, res) {
 			email 			: user.email,
 			username 		: user.username
 		});
+	})
+	.catch(function(err) {
+		return res.status(500).json({ message:err.message});
 	});
 };

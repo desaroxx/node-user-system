@@ -24,10 +24,8 @@ module.exports.resendEmail = function(req, res) {
 
 	var email = req.body.email;
 
-	// check if user already exists
-	var query = {email: email.toLowerCase()};
-	User.findOne(query, function(err, user) {
-		if (err) return res.status(500).json({ message: 'internal db error (0)'});
+	User.qFindByEmail(email)
+	.then(function(user) {
 		if (!user) return res.status(400).json({ message: 'invalid email (1)'});
 		if (user.activated) return res.status(400).json({ message: 'user already activated'});
 
@@ -36,17 +34,22 @@ module.exports.resendEmail = function(req, res) {
 
 		// prepare email
 		var email = {
-			from: 'skeleton <notifications@desaroxx.com>', // sender address
-		    to: user.email, // list of receivers
-		    subject: 'Account activation: resend', // Subject line
-		    text: token, // plaintext body
-		    html: token // html body
+			from: 'skeleton <notifications@desaroxx.com>', 	// sender address
+		    to: user.email, 								// list of receivers
+		    subject: 'Account activation: resend', 			// subject line
+		    text: token, 									// plaintext body
+		    html: token 									// html body
 		}
 
 		// send email
 		Mailer.sendMail(email, mailConfig.smtpSettings);
 		var message = 'activation resent to: ' + user.email;
 		return res.json({ message: message});
+	})
+	.catch(function(err) {
+		if (err.message === 'internal db error') {
+			return res.status(500).json({ message: 'internal db error (0)'});
+		} 
 	});
 };
 
@@ -70,15 +73,13 @@ module.exports.activate = function(req, res) {
 	}
 
 	// activate user in db
-	var query = {email: user.email.toLowerCase()};
-	var update = {activated: true};
-	var options = {};
-	User.findOneAndUpdate(query, update, options, function(err, updatedUser) {
-		if (err) {
-			return res.status(500).json({ message: 'internal db error (2)'});
-		}
+	User.qFindByUsernameAndUpdate(user.username, {activated:true})
+	.then(function(updatedUser) {
 		if (!updatedUser) return res.status(400).json({ message: 'valid token, but user does not exist'});
 		var message = 'activated: ' + updatedUser.email;
 		return res.json({ message: message});
+	})
+	.catch(function(err) {
+		return res.status(500).json({ message: err.message});
 	});
 };

@@ -27,11 +27,8 @@ module.exports.getUserDetails = function(req, res) {
 		isAuthorized = true;
 	}
 
-	// prepare query from parameters
-	var query = {username: req.params.username.toLowerCase()};
-
 	// find user in database
-	User.qFindOne(query)
+	User.qFindByUsername(req.params.username)
 	.then(function(user) {
 		if (!user) return res.status(400).json({ message: 'username does not exist'});
 		
@@ -91,40 +88,17 @@ module.exports.updateUserDetails = function(req, res) {
 	var query = {
 		username: req.params.username.toLowerCase()
 	};
-	
-	// function: check if username is free
-	var isUsernameFree = function() {
-		var deferred = Q.defer();
-		if ('username' in update) {
-			User.qFindOne({username:update.username.toLowerCase()})
-			.then(function(user) {
-				if (user) return res.status(400).json({ message: 'username taken'});
-				deferred.resolve();
-			});
-		} else {
-			deferred.resolve();
-		}
-		return deferred.promise;
-	}
 
-	// function: check if email is free
-	var isEmailFree = function() {
-		var deferred = Q.defer();
-		if ('email' in update) {
-			User.qFindOne({username:update.email.toLowerCase()})
-			.then(function(user) {
-				if (user) return res.status(400).json({ message: 'email taken'});
-				deferred.resolve();
-			});
-		} else {
-			deferred.resolve();
-		}
-		return deferred.promise;
-	};
+
 
 	// barriere: wait till both checks are done: isEmailFree and isUsernameFree
-	Q.all([isUsernameFree(), isEmailFree()])
-	.then(function() {
+	Q.all([isUsernameFree(update), isEmailFree(update)])
+	.spread(function(isUsernameFree,isEmailFree) {
+		if (!isUsernameFree) {
+			return res.status(400).json({ message: 'username taken'});
+		}
+		if (!isEmailFree) return res.status(400).json({ message: 'email taken'});
+
 		User.findOneAndUpdate(query, update, {}, function(err, user) {
 			if (err) return res.status(500).json({ message: 'internal server error (0)'});
 			if (!user) return res.status(400).json({ message: 'username does not exist exists'});
@@ -149,3 +123,40 @@ module.exports.updateUserDetails = function(req, res) {
 		});
 	});
 };
+
+function isUsernameFree(update) {
+	var deferred = Q.defer();
+	if('username' in update) {
+		User.qFindByUsername(update.username)
+		.then(function(user) {
+			if (user) {
+				deferred.resolve(false);
+			} else {
+				deferred.resolve(true);
+			}
+		});
+	} else {
+		deferred.resolve(true);
+	}
+	return deferred.promise;
+}
+
+function isEmailFree(update) {
+	var deferred = Q.defer();
+	if('email' in update) {
+		User.qFindByEmail(update.email)
+		.then(function(user) {
+			if (user) {
+				deferred.resolve(false);
+			} else {
+				deferred.resolve(true);
+			}
+		});
+	} else {
+		deferred.resolve(true);
+	}
+	return deferred.promise;
+}
+
+
+

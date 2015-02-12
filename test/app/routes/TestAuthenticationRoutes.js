@@ -39,7 +39,20 @@ describe('Test AuthenticationRoutes', function () {
 
         it('should reject already existing username', function(done) {
             var querystring = {
-                'username':'johnsnow'
+                'username':'JohnSnow'
+            };
+            request.get({'url':url, 'qs':querystring}, function(err, response, body) {
+                if (err) throw new Error('request failed');
+                body = JSON.parse(body);
+                expect(body.isFree).to.be.false;
+                done();
+            });
+
+        });
+
+        it('should reject already existing username (match case-insensitive)', function(done) {
+            var querystring = {
+                'username':'JOHNSNOW'
             };
             request.get({'url':url, 'qs':querystring}, function(err, response, body) {
                 if (err) throw new Error('request failed');
@@ -126,10 +139,34 @@ describe('Test AuthenticationRoutes', function () {
             });
         });
 
+        it('should not register an already existing, case-insensitive email', function(done) {
+            // clone good user
+            var user = JSON.parse(JSON.stringify(testUser));
+            user.email = 'JOHN@snow.com';
+
+            request.post({'url':url, 'json':true, 'body':user}, function(err, response, body) {
+                if (err) throw new Error('could not create new user');
+                expect(response.statusCode).to.equal(400);
+                done();
+            });
+        });
+
         it('should not register a already existing username', function(done) {
             // clone good user
             var user = JSON.parse(JSON.stringify(testUser));
-            user.username = 'johnsnow';
+            user.username = 'JohnSnow';
+
+            request.post({'url':url, 'json':true, 'body':user}, function(err, response, body) {
+                if (err) throw new Error('could not create new user');
+                expect(response.statusCode).to.equal(400);
+                done();
+            });
+        });
+
+        it('should not register a already existing, case-insensitive username', function(done) {
+            // clone good user
+            var user = JSON.parse(JSON.stringify(testUser));
+            user.username = 'JOHNSNOW';
 
             request.post({'url':url, 'json':true, 'body':user}, function(err, response, body) {
                 if (err) throw new Error('could not create new user');
@@ -252,6 +289,14 @@ describe('Test AuthenticationRoutes', function () {
         it('should grant a jsonwebtoken', function (done) {
         	var loginData = { email: 'john@snow.com', password: 'Tenupu11' };
         	request.post({'url':url, 'json':true, 'body':loginData}, function(err, response, body) {
+                expect(body.token).to.have.length.above(10);
+                done();
+            });
+        });
+
+        it('should grant a jsonwebtoken (event if email is wrong case-sensitive)', function (done) {
+            var loginData = { email: 'JOHN@SNOW.COM', password: 'Tenupu11' };
+            request.post({'url':url, 'json':true, 'body':loginData}, function(err, response, body) {
                 expect(body.token).to.have.length.above(10);
                 done();
             });
